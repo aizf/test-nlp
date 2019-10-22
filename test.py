@@ -10,8 +10,8 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 # Tokenize input
 text = "[CLS] Who was Jim Henson ? [SEP] Jim Henson was a puppeteer [SEP]"
+text1 = "Jim Henson was a puppeteer"
 tokenized_text = tokenizer.tokenize(text)
-
 # Mask a token that we will try to predict back with `BertForMaskedLM`
 masked_index = 8
 tokenized_text[masked_index] = '[MASK]'
@@ -44,7 +44,6 @@ with torch.no_grad():
     predictions = outputs[0]
 
 # confirm we were able to predict 'henson'
-print(outputs)
 predicted_index = torch.argmax(predictions[0, masked_index]).item()
 predicted_token = tokenizer.convert_ids_to_tokens([predicted_index])[0]
-print(predicted_token)
+assert predicted_token == 'henson'
