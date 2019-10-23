@@ -9,16 +9,12 @@ logging.basicConfig(level=logging.INFO)
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 # Tokenize input
-text = "[CLS] Who was Jim Henson ? [SEP] Jim Henson was a puppeteer [SEP]"
+text = "[CLS] 监听的数据后面写成对象形式 [SEP]"
 text1 = "Jim Henson was a puppeteer"
 tokenized_text = tokenizer.tokenize(text)
 # Mask a token that we will try to predict back with `BertForMaskedLM`
 masked_index = 8
 tokenized_text[masked_index] = '[MASK]'
-assert tokenized_text == [
-    '[CLS]', 'who', 'was', 'jim', 'henson', '?', '[SEP]', 'jim', '[MASK]',
-    'was', 'a', 'puppet', '##eer', '[SEP]'
-]
 
 # Convert token to vocabulary indices
 indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)

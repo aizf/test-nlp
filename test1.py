@@ -6,7 +6,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-def fine_tuning(text, label):
+def fine_tuning(text, labels):
+    model.train()
     # Tokenize input
     text = text
     indexed_tokens = tokenizer.encode(text, add_special_tokens=True)
@@ -14,17 +15,18 @@ def fine_tuning(text, label):
     tokens_tensor = torch.tensor(indexed_tokens).unsqueeze(0)
     # 相当于 tokens_tensor = torch.tensor([indexed_tokens])
 
-    # label
+    # labels
     label_list = ["joy", "sadness", "anger", "surprise", "fear"]
-    label = torch.tensor([[label_list.index(label)]])  # Batch size 1
+    indexed_labels = [label_list.index(label) for label in labels]
+    labels = torch.tensor([indexed_labels])  # Batch size 1
 
     # If you have a GPU, put everything on cuda
     tokens_tensor = tokens_tensor.to('cuda')
-    label = label.to('cuda')
+    labels = labels.to('cuda')
 
     #
     with torch.no_grad():
-        outputs = model(tokens_tensor, labels=label)
+        outputs = model(tokens_tensor, labels=labels)
         loss, logits = outputs[:2]
         print("loss: ", loss)
         print("logits: ", logits)
