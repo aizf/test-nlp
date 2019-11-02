@@ -4,21 +4,18 @@ from transformers import PretrainedConfig, BertTokenizer, BertModel, BertForSequ
 # OPTIONAL: if you want to have more information on what's happening under the hood, activate the logger as follows
 import logging
 logging.basicConfig(level=logging.INFO)
-
+label_list = ["anger", "fear", "joy", "sadness", "surprise"]
 
 def fine_tuning(text, labels):
     model.train()
     # Tokenize input
-    text = text
     indexed_tokens = tokenizer.encode(text, add_special_tokens=True)
     # Convert inputs to PyTorch tensors
     tokens_tensor = torch.tensor(indexed_tokens).unsqueeze(0)
     # 相当于 tokens_tensor = torch.tensor([indexed_tokens])
 
     # labels
-    label_list = ["joy", "sadness", "anger", "surprise", "fear"]
-    indexed_labels = [label_list.index(label) for label in labels]
-    labels = torch.tensor([indexed_labels])  # Batch size 1
+    labels = torch.tensor([labels])  # Batch size 1
 
     # If you have a GPU, put everything on cuda
     tokens_tensor = tokens_tensor.to('cuda')
@@ -65,8 +62,12 @@ model = BertForSequenceClassification.from_pretrained(
 # If you have a GPU, put everything on cuda
 model = model.to('cuda')
 
+test_seq = "You shouldn't try to cover it up."
+test_label = [0, 0, 0, 0, 0]
+fine_tuning(test_seq, test_label)
 #
-with open(r"./data/trainset.txt") as f:
-    for line in f:
-        l = line.rstrip().split('##')
-        fine_tuning(l[0], l[1])
+# with open(r"./data/trainset.txt") as f:
+#     for line in f:
+#         l = line.rstrip().split('##')
+#         fine_tuning(l[0], l[1])
+ 
