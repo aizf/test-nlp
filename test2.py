@@ -1,8 +1,11 @@
 import os
-os.chdir("/content")
+# os.chdir("/content")
 from fast_bert.data_cls import BertDataBunch
 import logging
 import torch
+
+if not os.path.isdir(r"./output_dir/tensorboard"):
+    os.makedirs(r"./output_dir/tensorboard")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
