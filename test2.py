@@ -1,6 +1,9 @@
+import os
+os.chdir("/content")
 from fast_bert.data_cls import BertDataBunch
 import logging
 import torch
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 device_cuda = torch.device("cuda")
@@ -8,11 +11,10 @@ device_cuda = torch.device("cuda")
 
 # tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-DATA_PATH = r".\data\jigsaw"
-LABEL_PATH = r".\data\jigsaw"
-label_cols = [
-    "toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"
-]
+DATA_PATH = r'./data'
+LABEL_PATH = r'./data'
+
+label_cols = ["anger", "fear", "joy", "sadness", "surprise"]
 databunch = BertDataBunch(
     DATA_PATH,
     LABEL_PATH,
@@ -20,9 +22,9 @@ databunch = BertDataBunch(
     train_file='train.csv',
     val_file='valid.csv',  # val.csv
     label_file='labels.csv',
-    text_col='comment_text',
+    text_col='content',
     label_col=label_cols,
-    batch_size_per_gpu=16,
+    batch_size_per_gpu=4,
     max_seq_length=512,
     multi_gpu=True,
     multi_label=True,
@@ -37,10 +39,15 @@ learner = BertLearner.from_pretrained_model(
     metrics=metrics,
     device=device_cuda,
     logger=logger,
-    output_dir=r".\data\jigsaw\output_dir",
+    output_dir=r"./output_dir",
     is_fp16=True,
     multi_gpu=True,
     multi_label=True)
 
-learner.fit(4, lr=6e-5, schedule_type="warmup_linear")
+learner.fit(
+    4,
+    lr=6e-5,
+    validate=True,
+    schedule_type="warmup_linear",
+    optimizer_type="lamb")
 learner.save_model()

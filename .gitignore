@@ -1,1 +1,6 @@
 test_data
+output_dir
+report.html
+__pycache__
+.pytest_cache
+assets
