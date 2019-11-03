@@ -1,3 +1,4 @@
+# 打乱重新分配训练集和验证集
 import pandas as pd
 import os
 dataPath = r"./data/"
