@@ -14,8 +14,7 @@ device_cuda = torch.device("cuda")
 
 # tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-DATA_PATH = r'./data'
-LABEL_PATH = r'./data'
+LABEL_PATH = DATA_PATH = r'./data'
 
 label_cols = ["anger", "fear", "joy", "sadness", "surprise"]
 databunch = BertDataBunch(
@@ -27,7 +26,7 @@ databunch = BertDataBunch(
     label_file='labels.csv',
     text_col='content',
     label_col=label_cols,
-    batch_size_per_gpu=4,
+    batch_size_per_gpu=2,
     max_seq_length=512,
     multi_gpu=True,
     multi_label=True,
@@ -48,7 +47,7 @@ learner = BertLearner.from_pretrained_model(
     multi_label=True)
 
 learner.fit(
-    4,
+    6,
     lr=6e-5,
     validate=True,
     schedule_type="warmup_linear",
