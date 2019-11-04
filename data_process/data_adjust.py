@@ -13,17 +13,21 @@ def adjustData(set, num_ones=None, output_dir=OUTPUT_DIR):
 
     num_0 = num_ones[0]  # 0*'1'
     num_others = np.sum(num_ones[1:])  # 其他*'1'
-    num_to_rm = num_0 - num_others
+    num_to_rm = min(int(num_others * 0.6), num_0)
+    print("num_0 :", num_0)
+    print("num_others :", num_others)
+    print("num_to_rm :", num_to_rm)
 
-    if num_to_rm > 0:
-        for index, row in set.iterrows():
-            n = 0
-            for j in range(1, set.shape[1]):
-                n += int(row.iloc[j])
-            if n == 0:
-                # print(row)
-                set.drop([index], inplace=True)
-                num_to_rm -= 1
+    for index, row in set.iterrows():
+        if num_to_rm <= 0:
+            break
+        n = 0
+        for j in range(1, set.shape[1]):
+            n += int(row.iloc[j])
+        if n == 0:
+            # print(row)
+            set.drop([index], inplace=True)
+            num_to_rm -= 1
 
     # print(set.shape)
     set = set.sample(frac=1).reset_index(drop=True)
